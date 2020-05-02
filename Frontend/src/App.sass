@@ -163,6 +163,10 @@ img
 .form 
   .form-group 
     margin: 1.2rem 0
+    .error-text
+      color: var(--danger-color)
+      margin-bottom: 0.5rem
+      font-size: 14px
   .form-text 
     display: block
     margin-top: 0.3rem
@@ -190,9 +194,12 @@ img
 .form textarea 
   display: block
   width: 100%
+  
   padding: 0.4rem
   font-size: 1.2rem
   border: 1px solid #ccc
+  &.input-error
+    box-shadow: 0px 0px 5px var(--danger-color)
 .form input[type='submit'],
 button 
   font: inherit

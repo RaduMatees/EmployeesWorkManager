@@ -1,8 +1,9 @@
 const router = require('express').Router()
-const { userRegister, userLogin, userAuth, userSerializer, checkRole } = require('../utils/Auth')
+const { userRegister, userLogin, checkRole, returnUser } = require('../utils/Auth')
+const authMiddleware = require('../middleware/authMiddleware')
 
 // Users Registration
-router.post('/register-user', async (req, res) => {
+router.post('/register-employee', async (req, res) => {
   await userRegister(req.body, 'employee', res)
 })
 
@@ -12,7 +13,7 @@ router.post('/register-admin', async (req, res) => {
 })
 
 // Users Login
-router.post('/login-user', async (req, res) => {
+router.post('/login-employee', async (req, res) => {
   await userLogin(req.body, 'employee', res)
 })
 
@@ -21,19 +22,14 @@ router.post('/login-admin', async (req, res) => {
   await userLogin(req.body, 'admin', res)
 })
 
-// Profile route
-router.get('/profile', userAuth, async (req, res) => {
-  return res.json(userSerializer(req.user))
-})
-
 // Users Protected
-router.get('/user-protected', userAuth, checkRole(['employee']), async (req, res) => {
-  return res.json('Hello employee')
+router.get('/employee-protected', authMiddleware, checkRole(['employee']), async (req, res) => {
+  await returnUser(req.user, res)
 })
 
 // Admin Protected
-router.get('/admin-protected', userAuth, checkRole(['admin']), async (req, res) => {
-  return res.json('Hello admin')
+router.get('/admin-protected', authMiddleware, checkRole(['admin']), async (req, res) => {
+  await returnUser(req.user, res)
 })
 
 module.exports = router

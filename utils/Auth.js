@@ -26,10 +26,22 @@ const userRegister = async (userData, role, res) => {
       password: hashedPass
     })
     await newUser.save()
-    return res.status(201).json({
-      message: 'User created succesfully',
-      success: true
+
+    const payload = {
+      user: {
+        id: newUser.id,
+        role: newUser.role
+      }
+    }
+    jwt.sign(payload, SECRET, { expiresIn: 3600 }, (err, token) => {
+      if (err) throw err
+      return res.json({
+        success: true,
+        message: 'Successfully registered the user',
+        token
+      })
     })
+
   } catch (err) {
     return res.status(500).json({
       message: 'Error creating the account',
@@ -59,68 +71,49 @@ const userLogin = async (userData, role, res) => {
   }
 
   let isMatch = await bcrypt.compare(password, user.password)
-  if (isMatch) {
-    let token = jwt.sign({
-      user_id: user._id,
-      role: user.role,
-      email: user.email,
-    }, SECRET, { expiresIn: "7 days" })
 
-    let result = {
-      name: user.name,
-      role: user.role,
-      email: user.email,
-      token: `Bearer ${token}`,
-      expiresIn: 168
+  if (!isMatch) return res.status(403).json({
+    message: 'Invalid credentials',
+    success: false
+  })
+
+  const payload = {
+    user: {
+      id: user.id,
+      role: user.role
     }
+  }
+  jwt.sign(payload, SECRET, { expiresIn: 3600 }, (err, token) => {
+    if (err) throw err
+    return res.json({ token })
+  })
 
-    return res.status(200).json({
-      ...result,
-      message: "User logged in succesfully",
-      success: true
-    })
-  } else {
-    return res.status(403).json({
-      message: 'Invalid credentials',
-      success: false
-    })
+}
+
+const returnUser = async (reqUser, res) => {
+  try {
+    const user = await User.findById(reqUser.id).select('-password')
+    return res.json(user)
+  } catch (err) {
+    console.error('Error finding user by id, ', err.message)
+    return res.status(500).send('Server Error')
   }
 }
 
-const validateUsername = async (username) => {
-  let user = await User.findOne({ username })
-  return user ? true : false
-}
-
 const validateEmail = async (email) => {
-  let user = await User.findOne({ email })
+  const user = await User.findOne({ email })
   return user ? true : false
 }
-
-// @Desc Passport Middleware
-const userAuth = passport.authenticate('jwt', { session: false })
 
 // @Desc Check Role Middleware
 const checkRole = (roles) => (req, res, next) => {
   if (roles.includes(req.user.role)) {
     return next()
   } else {
-    res.status(401).json({
+    return res.status(401).json({
       message: 'Unauthorized',
       success: false
     })
-  }
-}
-
-// @Desc Serialize User
-const userSerializer = (user) => {
-  return {
-    _id: user._id,
-    name: user.name,
-    username: user.username,
-    email: user.email,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt
   }
 }
 
@@ -128,6 +121,5 @@ module.exports = {
   checkRole,
   userRegister,
   userLogin,
-  userAuth,
-  userSerializer
+  returnUser
 }

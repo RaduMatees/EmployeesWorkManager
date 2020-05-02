@@ -5,12 +5,16 @@ import { TypeRegister, Role } from '@/interfaces/type-register'
   computed: {
     userRegisterData() {
       return this.$store.getters.userRegisterData
+    },
+    emailError() {
+      return this.$store.getters.emailError
     }
   }
 })
 export default class Register extends Vue {
   // Store
   private readonly userRegisterData!: TypeRegister
+  private readonly emailError!: boolean
   // Local
   private formData: TypeRegister = {
     name: '',
@@ -19,15 +23,23 @@ export default class Register extends Vue {
     password: '',
     password2: ''
   }
+  private passwordError: boolean = false
+
+  beforeDestroy() {
+    this.passwordError = false
+    this.$store.dispatch('removeErrors')
+  }
 
   onChange(e: any) {
     const selectedField: 'name' | 'email' | 'password' | 'password2' = e.target.name
+    this.formData = { ...this.userRegisterData }
     this.formData[selectedField] = e.target.value
     this.$store.dispatch('updateUserRegisterData', this.formData)
   }
 
   onChangeRole(e: any) {
     const role: Role = e.target.checked ? 'employee' : 'admin'
+    this.formData = { ...this.userRegisterData }
     this.formData.role = role
     this.$store.dispatch('updateUserRegisterData', this.formData)
   }
@@ -35,9 +47,9 @@ export default class Register extends Vue {
   onSubmit(e: any) {
     e.preventDefault()
     if (this.formData.password !== this.formData.password2) {
-      console.log('Passwords do not match')
+      this.passwordError = true
     } else {
-      console.log('this.formData', this.formData)
+      this.$store.dispatch('submitUserRegistration', this.formData)
     }
   }
 
@@ -66,12 +78,15 @@ export default class Register extends Vue {
             </div>
 
             <div class="form-group">
-              <input type="email" placeholder="Email Address" name="email" value={email} onChange={this.onChange} />
+              {this.emailError ? <p class='error-text'>Email is already registered</p> : null}
+              <input class={this.emailError ? 'input-error' : null} type="email" placeholder="Email Address" name="email" value={email} onChange={this.onChange} />
               <small class="form-text"></small>
             </div>
 
             <div class="form-group">
+              {this.passwordError ? <p class='error-text'>Passwords do not match</p> : null}
               <input
+                class={this.passwordError ? 'input-error' : null}
                 type="password"
                 placeholder="Password"
                 name="password"
@@ -83,6 +98,7 @@ export default class Register extends Vue {
 
             <div class="form-group">
               <input
+                class={this.passwordError ? 'input-error' : null}
                 type="password"
                 placeholder="Confirm Password"
                 name="password2"
