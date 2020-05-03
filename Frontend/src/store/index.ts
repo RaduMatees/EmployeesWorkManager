@@ -1,15 +1,18 @@
 import Vue from 'vue'
-import Vuex from 'vuex'
+import Vuex, { ActionContext } from 'vuex'
 import { authModule } from './auth'
 
 Vue.use(Vuex)
 
 export interface State {
-
+  user: null
 }
+type RootContext = ActionContext<State, State>
 
 export const store = new Vuex.Store({
-  state: {},
+  state: {
+    user: null
+  },
   mutations: {},
   actions: {},
   modules: {

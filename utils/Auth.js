@@ -64,7 +64,7 @@ const userLogin = async (userData, role, res) => {
   }
   // check role
   if (user.role !== role) {
-    return res.status(403).json({
+    return res.status(401).json({
       message: 'Please make sure you are logging from the right portal',
       success: false
     })
@@ -85,7 +85,11 @@ const userLogin = async (userData, role, res) => {
   }
   jwt.sign(payload, SECRET, { expiresIn: 3600 }, (err, token) => {
     if (err) throw err
-    return res.json({ token })
+    return res.json({
+      success: true,
+      message: 'Successfully logged in user',
+      token
+    })
   })
 
 }

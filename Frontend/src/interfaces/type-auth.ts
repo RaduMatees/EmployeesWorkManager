@@ -6,4 +6,10 @@ export interface TypeRegister {
   password2: string
 }
 
+export interface TypeLogin {
+  email: string,
+  password: string,
+  role: Role
+}
+
 export type Role = 'admin' | 'employee'

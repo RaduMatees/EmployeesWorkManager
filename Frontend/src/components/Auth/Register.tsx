@@ -1,8 +1,11 @@
-import { Vue, Component } from 'vue-property-decorator'
-import { TypeRegister, Role } from '@/interfaces/type-register'
+import { Vue, Component, Watch } from 'vue-property-decorator'
+import { TypeRegister, Role } from '@/interfaces/type-auth'
 
 @Component({
   computed: {
+    isAuthenticated() {
+      return this.$store.getters.isAuthenticated
+    },
     userRegisterData() {
       return this.$store.getters.userRegisterData
     },
@@ -15,6 +18,7 @@ export default class Register extends Vue {
   // Store
   private readonly userRegisterData!: TypeRegister
   private readonly emailError!: boolean
+  private readonly isAuthenticated!: boolean
   // Local
   private formData: TypeRegister = {
     name: '',
@@ -25,26 +29,35 @@ export default class Register extends Vue {
   }
   private passwordError: boolean = false
 
+  @Watch('isAuthenticated')
+  onUserAuthenticated(val: boolean) {
+    if (val) return this.$router.push({ name: 'dashboard' })
+  }
+
+  created() {
+    if (this.isAuthenticated) return this.$router.push({ name: 'dashboard' })
+  }
+
   beforeDestroy() {
     this.passwordError = false
     this.$store.dispatch('removeErrors')
   }
 
-  onChange(e: any) {
+  private onChange(e: any) {
     const selectedField: 'name' | 'email' | 'password' | 'password2' = e.target.name
     this.formData = { ...this.userRegisterData }
     this.formData[selectedField] = e.target.value
     this.$store.dispatch('updateUserRegisterData', this.formData)
   }
 
-  onChangeRole(e: any) {
+  private onChangeRole(e: any) {
     const role: Role = e.target.checked ? 'employee' : 'admin'
     this.formData = { ...this.userRegisterData }
     this.formData.role = role
     this.$store.dispatch('updateUserRegisterData', this.formData)
   }
 
-  onSubmit(e: any) {
+  private onSubmit(e: any) {
     e.preventDefault()
     if (this.formData.password !== this.formData.password2) {
       this.passwordError = true

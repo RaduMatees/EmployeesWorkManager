@@ -6,6 +6,10 @@ import './App.sass'
 
 @Component
 export default class App extends Vue {
+  created() {
+    this.$store.dispatch('checkIfAlreadyLoggedIn')
+  }
+
   render() {
     return (
       <div id="app">
