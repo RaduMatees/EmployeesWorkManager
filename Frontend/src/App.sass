@@ -254,6 +254,25 @@ button
   justify-content: center
   text-align: center
 
+.card
+  display: flex
+  align-items: center
+  cursor: pointer
+  &.remote
+    width: 100%
+    height: 3rem
+    border: 1px solid var(--dark-color)
+    border-radius: 1rem
+    color: var(--dark-color)
+    i
+      color: var(--dark-color)
+      margin-left: 1rem
+      margin-right: 1rem
+      transform: scale(1.3) 
+  &:hover
+    background-color: var(--light-color)
+
+
 // User Registration Switch button
 .group-switch
   display: flex

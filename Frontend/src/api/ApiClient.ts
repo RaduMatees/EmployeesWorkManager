@@ -8,7 +8,7 @@ export default class ApiClient {
   constructor() {
     this.restClient = axios.create({
       baseURL: `http://localhost:5000`,
-      headers: { 'content-type': 'application/json' }
+      headers: { 'content-type': 'application/json', 'Access-Control-Allow-Origin': "*" }
     })
   }
 
@@ -70,6 +70,15 @@ export default class ApiClient {
 
       this.clearToken()
       return { success: err.response.data.success, status: err.response.status }
+    }
+  }
+
+  async getAccessTokenFromGithub(code: string) {
+    try {
+      const response = await this.restClient.post(`/api/oauth/github-token/${code}`)
+      console.log('ressss', response.data.token)
+    } catch (err) {
+      console.error('Error retreiving the access token from Github', err)
     }
   }
 

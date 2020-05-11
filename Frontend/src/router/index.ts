@@ -5,6 +5,7 @@ import Login from '@/components/Auth/Login'
 import Register from '@/components/Auth/Register'
 import Profiles from '@/views/Profiles/Profiles'
 import Dashboard from '@/views/Dashboard/Dashboard'
+import GithubSignIn from '@/components/Github/Github-Signin'
 import { store } from "@/store"
 import ApiClient from "@/api/ApiClient"
 
@@ -44,6 +45,11 @@ const routes: Array<RouteConfig> = [
         if (store.getters.isAuthenticated) next()
       }
     }
+  },
+  {
+    path: '/github-signin',
+    name: 'github-signin',
+    component: GithubSignIn
   }
 ]
 

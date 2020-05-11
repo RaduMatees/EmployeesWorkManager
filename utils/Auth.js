@@ -2,7 +2,6 @@ const bcrypt = require('bcryptjs')
 const User = require('../models/User')
 const jwt = require('jsonwebtoken')
 const { SECRET } = require('../config/index')
-const passport = require('passport')
 
 // @desc Register the user (employee, admin)
 const userRegister = async (userData, role, res) => {

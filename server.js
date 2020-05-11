@@ -15,6 +15,7 @@ app.use(cors())
 
 // Use router
 app.use('/api/users', require('./routes/users'))
+app.use('/api/oauth', require('./routes/oauth'))
 
 const startApp = async () => {
   // Connect to DB
