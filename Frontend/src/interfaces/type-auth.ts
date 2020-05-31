@@ -12,4 +12,10 @@ export interface TypeLogin {
   role: Role
 }
 
+export interface TypeLoggedUser {
+  name: string,
+  email: '',
+  role: Role | ''
+}
+
 export type Role = 'admin' | 'employee'

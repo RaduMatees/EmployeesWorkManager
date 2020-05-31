@@ -32,12 +32,14 @@ const userRegister = async (userData, role, res) => {
         role: newUser.role
       }
     }
+    const sentUser = { name: newUser.name, email: newUser.email, role: newUser.role }
     jwt.sign(payload, SECRET, { expiresIn: 3600 }, (err, token) => {
       if (err) throw err
       return res.json({
         success: true,
         message: 'Successfully registered the user',
-        token
+        token,
+        user: sentUser
       })
     })
 
@@ -82,12 +84,14 @@ const userLogin = async (userData, role, res) => {
       role: user.role
     }
   }
+  const sentUser = { name: user.name, email: user.email, role: user.role }
   jwt.sign(payload, SECRET, { expiresIn: 3600 }, (err, token) => {
     if (err) throw err
     return res.json({
       success: true,
       message: 'Successfully logged in user',
-      token
+      token,
+      user: sentUser
     })
   })
 

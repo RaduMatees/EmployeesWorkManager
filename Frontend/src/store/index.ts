@@ -5,15 +5,11 @@ import { authProvidersModule } from './authProviders'
 
 Vue.use(Vuex)
 
-export interface State {
-  user: null
-}
+export interface State { }
 type RootContext = ActionContext<State, State>
 
 export const store = new Vuex.Store({
-  state: {
-    user: null
-  },
+  state: {},
   mutations: {},
   actions: {},
   modules: {

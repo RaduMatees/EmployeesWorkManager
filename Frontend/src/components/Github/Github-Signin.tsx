@@ -10,7 +10,7 @@ export default class GithubSignIn extends Vue {
   render() {
     return (
       <div class='container'>
-
+        Github Data
       </div>
     )
   }

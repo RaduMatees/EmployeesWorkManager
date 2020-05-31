@@ -25,6 +25,11 @@ export default class ApiClient {
     return false
   }
 
+  public async loadUser() {
+    const user = await this.restClient.get('/api/users')
+    return user
+  }
+
   public clearToken() {
     localStorage.removeItem('token')
     delete this.restClient.defaults.headers.common['x-auth-token']
@@ -37,15 +42,15 @@ export default class ApiClient {
 
   async registerUser(formData: TypeRegister) {
     const { name, email, password, role } = formData
-    const newAdmin = { name, email, password }
+    const newUser = { name, email, password }
 
     try {
-      const body = JSON.stringify(newAdmin)
+      const body = JSON.stringify(newUser)
       const res = await this.restClient.post(`/api/users/register-${role}`, body)
       console.log('Succesfully registered the user')
 
       this.setToken(res.data.token)
-      return res.data.success
+      return { success: res.data.success, status: res.data.status, user: res.data.user }
     } catch (err) {
       console.error('Error registering a user', err.response.data)
 
@@ -64,7 +69,7 @@ export default class ApiClient {
       console.log('Succesfully logged in')
 
       this.setToken(res.data.token)
-      return { success: res.data.success, status: res.status }
+      return { success: res.data.success, status: res.status, user: res.data.user }
     } catch (err) {
       console.error('Error loggin in', err.response.data)
 

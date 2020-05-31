@@ -1,6 +1,19 @@
 const router = require('express').Router()
 const { userRegister, userLogin, checkRole, returnUser } = require('../utils/Auth')
 const authMiddleware = require('../middleware/authMiddleware')
+const User = require('../models/User')
+
+// Test Auth
+router.get('/', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password')
+    const sentUser = { name: user.name, email: user.email, role: user.role }
+    res.json(sentUser)
+  } catch (err) {
+    console.error(err.message)
+    res.status(500).send('Server Error')
+  }
+})
 
 // Users Registration
 router.post('/register-employee', async (req, res) => {

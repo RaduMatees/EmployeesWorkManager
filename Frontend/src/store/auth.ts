@@ -1,6 +1,6 @@
 import { ActionContext } from "vuex"
 import { State as RootState } from "."
-import { TypeRegister, TypeLogin } from '@/interfaces/type-auth'
+import { TypeRegister, TypeLogin, TypeLoggedUser } from '@/interfaces/type-auth'
 import { Errors, ErrorTypes } from '@/interfaces/errors'
 import { createEmptyErrorsObject } from '@/utils/utilFunctions'
 import ApiClient from "@/api/ApiClient"
@@ -8,7 +8,8 @@ import ApiClient from "@/api/ApiClient"
 interface AuthState {
   userRegisterData: TypeRegister,
   errors: Errors,
-  isAuthenticated: boolean
+  isAuthenticated: boolean,
+  loggedUser: TypeLoggedUser
 }
 type AuthContext = ActionContext<AuthState, RootState>
 
@@ -27,7 +28,12 @@ export const authModule = {
       emailError: false,
       loginError: false,
       loginPortalError: false
-    } as Errors
+    } as Errors,
+    loggedUser: {
+      name: '',
+      email: '',
+      role: ''
+    } as TypeLoggedUser
   },
 
   getters: {
@@ -45,6 +51,9 @@ export const authModule = {
     },
     loginPortalError(state: AuthState) {
       return state.errors.loginPortalError
+    },
+    loggedUser(state: AuthState) {
+      return state.loggedUser
     }
   },
 
@@ -63,6 +72,10 @@ export const authModule = {
 
     setIsAuthenticated(state: AuthState, value: boolean) {
       state.isAuthenticated = value
+    },
+
+    setLoggedUser(state: AuthState, loggedUser: TypeLoggedUser) {
+      state.loggedUser = loggedUser
     }
   },
 
@@ -73,12 +86,13 @@ export const authModule = {
 
     async submitUserRegistration(context: AuthContext, userRegisterData: TypeRegister) {
       const apiClient = ApiClient.getInstance()
-      const success = await apiClient.registerUser(userRegisterData)
-      if (!success) {
+      const data = await apiClient.registerUser(userRegisterData)
+      if (!data.success) {
         context.commit('setIsAuthenticated', false)
         return context.commit('setErrorTrue', 'emailError')
       }
 
+      context.commit('setLoggedUser', data.user)
       context.commit('setIsAuthenticated', true)
     },
 
@@ -92,13 +106,21 @@ export const authModule = {
         return context.commit('setErrorTrue', 'loginError')
       }
 
+      context.commit('setLoggedUser', data.user)
       context.commit('setIsAuthenticated', true)
     },
 
-    checkIfAlreadyLoggedIn(context: AuthContext) {
+    async checkIfAlreadyLoggedIn(context: AuthContext) {
       const apiClient = ApiClient.getInstance()
-      const isAuthenticated = apiClient.setTokenFromStorage()
-      context.commit('setIsAuthenticated', isAuthenticated)
+      apiClient.setTokenFromStorage()
+      try {
+        const loggedUser = await apiClient.loadUser()
+        context.commit('setLoggedUser', loggedUser.data)
+        context.commit('setIsAuthenticated', true)
+      } catch (err) {
+        console.error('Token is not valid', err)
+        apiClient.clearToken()
+      }
     },
 
     logoutUser(context: AuthContext) {
