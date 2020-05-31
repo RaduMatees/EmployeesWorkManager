@@ -128,12 +128,12 @@ export const authModule = {
         const loggedUser = await apiClient.loadUser()
         context.commit('setLoggedUser', loggedUser.data)
         context.commit('setIsAuthenticated', true)
-        context.commit('setIsAuthenticating', false)
-        router.push({ name: 'dashboard' })
       } catch (err) {
         console.error('Token is not valid', err)
         apiClient.clearToken()
+        if (router.currentRoute.path !== '/') router.push({ name: 'landing' })
       }
+      context.commit('setIsAuthenticating', false)
     },
 
     logoutUser(context: AuthContext) {

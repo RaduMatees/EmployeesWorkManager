@@ -81,9 +81,17 @@ export default class ApiClient {
   async getAccessTokenFromGithub(code: string) {
     try {
       const response = await this.restClient.post(`/api/oauth/github-token/${code}`)
-      console.log('ressss', response.data.token)
+      return response.data.token
     } catch (err) {
       console.error('Error retreiving the access token from Github', err)
+    }
+  }
+
+  async getRepositories(token: string) {
+    try {
+      await this.restClient.get(`/api/oauth/github/repositories/${token}`)
+    } catch (err) {
+
     }
   }
 

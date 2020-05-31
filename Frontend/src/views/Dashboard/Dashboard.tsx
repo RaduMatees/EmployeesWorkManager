@@ -1,13 +1,23 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
 
-@Component
+@Component({
+  computed: {
+    githubAccessToken() {
+      return this.$store.getters.githubAccessToken
+    }
+  }
+})
 export default class Dashboard extends Vue {
-  // private aTag!: any
+  private readonly githubAccessToken!: string
 
-  // mounted() {
-  //   this.aTag = this.$refs.aRef
-  //   this.aTag.click()
-  // }
+  @Watch('githubAccessToken')
+  onGithubTokenAvailable(token: string) {
+    if (token) this.$store.dispatch('getRepositories', token)
+  }
+
+  mounted() {
+    if (this.$route.query.code) this.$store.dispatch('getAccessTokenFromGithub', this.$route.query.code)
+  }
 
   render() {
     return (

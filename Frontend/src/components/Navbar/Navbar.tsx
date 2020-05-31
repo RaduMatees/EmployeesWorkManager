@@ -12,6 +12,7 @@ export default class Navbar extends Vue {
 
   private logout() {
     this.$store.dispatch('logoutUser')
+    this.$store.dispatch('clearGithubAccessToken')
   }
 
   render() {

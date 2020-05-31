@@ -1,22 +1,5 @@
 const axios = require('axios')
-
-const authenticateToGithubCallback = async (req, res) => {
-  console.log('callbackkkkkkkkkkkkkkkkkkkkkk')
-  try {
-    const { query } = req
-    const { code } = code
-
-    if (!code) return res.send({
-      success: false,
-      message: 'Error, no code at github authentication'
-    })
-
-    console.log('code', code)
-    return code
-  } catch (err) {
-    console.error('Error authenticating to Github OAuth Porvider', err)
-  }
-}
+const setAuthToken = require('./setAuthToken')
 
 const authenticateToGithub = async (req, res) => {
   console.log('authenticateToGithub')
@@ -28,7 +11,6 @@ const authenticateToGithub = async (req, res) => {
 }
 
 const getTokenFromGithub = async (req, res, code) => {
-  console.log('getTokenFromGithub', code)
   const params = {
     client_id: process.env.CLIENT_ID,
     client_secret: process.env.CLIENT_SECRET,
@@ -47,4 +29,20 @@ const getTokenFromGithub = async (req, res, code) => {
   }
 }
 
-module.exports = { authenticateToGithub, authenticateToGithubCallback, getTokenFromGithub }
+const getRepositoriesFromGithub = async (req, res, token) => {
+  try {
+    token = token.substring(token.indexOf('=') + 1, token.indexOf('&scope'))
+    setAuthToken(token)
+    const response = await axios.get('https://api.github.com/user')
+    console.log('REPONSE', response.data)
+    return res.json({
+      status: 200,
+      success: true,
+      organizations: response.data
+    })
+  } catch (err) {
+    console.error('Error trying to fetch repositories, ', err)
+  }
+}
+
+module.exports = { authenticateToGithub, getTokenFromGithub, getRepositoriesFromGithub }

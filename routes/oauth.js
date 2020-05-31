@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { authenticateToGithub, authenticateToGithubCallback, getTokenFromGithub } = require('../oAuthProviders/oAuthProviders')
+const { authenticateToGithub, getTokenFromGithub, getRepositoriesFromGithub } = require('../oAuthProviders/oAuthProviders')
 
 // Github
 router.get('/github', async (req, res) => {
@@ -10,8 +10,8 @@ router.post('/github-token/:code', async (req, res) => {
   await getTokenFromGithub(req, res, req.params.code)
 })
 
-router.post('/github-callback', async (req, res) => {
-  await authenticateToGithubCallback(req, res)
+router.get('/github/repositories/:token', async (req, res) => {
+  await getRepositoriesFromGithub(req, res, req.params.token)
 })
 
 module.exports = router
