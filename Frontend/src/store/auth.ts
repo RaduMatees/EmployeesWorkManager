@@ -4,12 +4,14 @@ import { TypeRegister, TypeLogin, TypeLoggedUser } from '@/interfaces/type-auth'
 import { Errors, ErrorTypes } from '@/interfaces/errors'
 import { createEmptyErrorsObject } from '@/utils/utilFunctions'
 import ApiClient from "@/api/ApiClient"
+import router from '../router'
 
 interface AuthState {
   userRegisterData: TypeRegister,
   errors: Errors,
   isAuthenticated: boolean,
-  loggedUser: TypeLoggedUser
+  loggedUser: TypeLoggedUser,
+  authenticating: boolean
 }
 type AuthContext = ActionContext<AuthState, RootState>
 
@@ -33,7 +35,8 @@ export const authModule = {
       name: '',
       email: '',
       role: ''
-    } as TypeLoggedUser
+    } as TypeLoggedUser,
+    authenticating: false
   },
 
   getters: {
@@ -54,6 +57,9 @@ export const authModule = {
     },
     loggedUser(state: AuthState) {
       return state.loggedUser
+    },
+    authenticating(state: AuthState) {
+      return state.authenticating
     }
   },
 
@@ -76,6 +82,10 @@ export const authModule = {
 
     setLoggedUser(state: AuthState, loggedUser: TypeLoggedUser) {
       state.loggedUser = loggedUser
+    },
+
+    setIsAuthenticating(state: AuthState, authenticating: boolean) {
+      state.authenticating = authenticating
     }
   },
 
@@ -111,12 +121,15 @@ export const authModule = {
     },
 
     async checkIfAlreadyLoggedIn(context: AuthContext) {
+      context.commit('setIsAuthenticating', true)
       const apiClient = ApiClient.getInstance()
       apiClient.setTokenFromStorage()
       try {
         const loggedUser = await apiClient.loadUser()
         context.commit('setLoggedUser', loggedUser.data)
         context.commit('setIsAuthenticated', true)
+        context.commit('setIsAuthenticating', false)
+        router.push({ name: 'dashboard' })
       } catch (err) {
         console.error('Token is not valid', err)
         apiClient.clearToken()
