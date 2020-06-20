@@ -1,0 +1,62 @@
+// Work Manager
+{
+  "Admins": {
+    "1": {
+      "email": "radumatees@gmail.com",
+      "password": "rasinarasina"
+    }
+  },
+  "Employees": {
+    "1": {
+      "email": "Angajat11111@gmail.com",
+      "password": "rasinarasina"
+    },
+    "2": {
+      "email": "Angajat22222@gmail.com",
+      "password": "rasinarasina"
+    },
+    "3": {
+      "email": "Angajat33333@gmail.com",
+      "password": "rasinarasina"
+    },
+    "4": {
+      "email": "Angajat44444@gmail.com",
+      "password": "rasinarasina"
+    },
+    "5": {
+      "email": "Angajat55555@gmail.com",
+      "password": "rasinarasina"
+    }
+  }
+}
+// Github and Gmail
+{
+  "Admins": {
+    "1": {
+      "email": "radumatees@gmail.com",
+      "password": "xxx"
+    }
+  },
+  "Employees": {
+    "1": {
+      "email": "Angajat11111@gmail.com",
+      "password": "Employee11111!WM"
+    },
+    "2": {
+      "email": "Angajat22222@gmail.com",
+      "password": "Employee22222!WM"
+    },
+    "3": {
+      "email": "Angajat33333@gmail.com",
+      "password": "Employee33333!WM"
+    },
+    "4": {
+      "email": "Angajat44444@gmail.com",
+      "password": "Employee44444!WM"
+    },
+    "5": {
+      "email": "Angajat55555@gmail.com",
+      "password": "Employee55555!WM"
+    }
+  }
+}
