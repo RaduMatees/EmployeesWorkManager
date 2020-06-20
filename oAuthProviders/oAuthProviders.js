@@ -1,5 +1,6 @@
 const axios = require('axios')
 const setAuthToken = require('./setAuthToken')
+const { returnUser } = require('../utils/Auth')
 
 const authenticateToGithub = async (req, res) => {
   console.log('authenticateToGithub')
@@ -30,18 +31,29 @@ const getTokenFromGithub = async (req, res, code) => {
 }
 
 const getRepositoriesFromGithub = async (req, res, token) => {
+  token = token.substring(token.indexOf('=') + 1, token.indexOf('&scope'))
+  setAuthToken(token)
+
   try {
-    token = token.substring(token.indexOf('=') + 1, token.indexOf('&scope'))
-    setAuthToken(token)
-    const response = await axios.get('https://api.github.com/user')
-    console.log('REPONSE', response.data)
-    return res.json({
-      status: 200,
-      success: true,
-      organizations: response.data
-    })
+    const response = await axios.get(`https://api.github.com/orgs/${process.env.ORGANIZATION}/repos`)
+    const repos = response.data.map(repo => repo.name)
+    console.log('repos', repos)
   } catch (err) {
     console.error('Error trying to fetch repositories, ', err)
+  }
+
+  // const user = await returnUser(req.user)
+  // console.log('user', user)
+
+  // Get Collaborators
+  console.log('token', axios.defaults.headers.common)
+  const collaborators = await axios.get(`https://api.github.com/repos/BigTechEnterprise/Project1-Frontend/collaborators`)
+  console.log('collaborators', collaborators)
+
+  if (req.user.role === 'admin') {
+    // Fetch all employees and repositories
+  } else {
+
   }
 }
 

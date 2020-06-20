@@ -23,7 +23,7 @@ export default class Dashboard extends Vue {
     return (
       <div class='container dashboard'>
         Dashboard Page
-        <a ref='aRef' href={'http://localhost:5000/api/oauth/github'}>
+        <a href={'http://localhost:5000/api/oauth/github'}>
           <div class='card remote'>
             <i class="fab fa-github"></i>Github
           </div>

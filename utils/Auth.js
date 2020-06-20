@@ -100,10 +100,9 @@ const userLogin = async (userData, role, res) => {
 const returnUser = async (reqUser, res) => {
   try {
     const user = await User.findById(reqUser.id).select('-password')
-    return res.json(user)
+    return user
   } catch (err) {
     console.error('Error finding user by id, ', err.message)
-    return res.status(500).send('Server Error')
   }
 }
 
