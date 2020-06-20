@@ -1,10 +1,11 @@
 const axios = require('axios')
 
-const setAuthToken = token => {
+const setAuthToken = (instance, token) => {
   if (token) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    instance.defaults.headers.common['Authorization'] = `token ${token}`
+    instance.defaults.headers.common['Content-Type'] = `application/json`
   } else {
-    delete axios.defaults.headers.common['Authorization']
+    delete instance.defaults.headers.common['Authorization']
   }
 }
 

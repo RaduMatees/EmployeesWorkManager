@@ -3,8 +3,8 @@ const { authenticateToGithub, getTokenFromGithub, getRepositoriesFromGithub } = 
 const authMiddleware = require('../middleware/authMiddleware')
 
 // Github
-router.get('/github', async (req, res) => {
-  await authenticateToGithub(req, res)
+router.get('/github/:role', async (req, res) => {
+  await authenticateToGithub(req, res, req.params.role)
 })
 
 router.post('/github-token/:code', async (req, res) => {
