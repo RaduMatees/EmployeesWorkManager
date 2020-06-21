@@ -87,7 +87,7 @@ export default class Register extends Vue {
             </div>
 
             <div class="form-group">
-              <input type="text" placeholder="Name" name="name" value={name} required onChange={this.onChange} />
+              <input type="text" placeholder="Name / Please use your Github Name" name="name" value={name} required onChange={this.onChange} />
             </div>
 
             <div class="form-group">

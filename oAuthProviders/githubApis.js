@@ -35,11 +35,20 @@ const getRepositoriesFromGithub = async (req, res) => {
   // console.log('members', members.data)
 
   // const myRepos = await axiosInstance.get('/users/octocat/repos')
-  const data = await axiosInstance.get('/user')
-  const myName = data.data.login
-  console.log('myName', myName)
-  const myRepos = await axiosInstance.get(`/users/${myName}/repos`)
-  console.log('myrepos', myRepos)
+
+  // This request will retreive the user currently logged in on Github on the PC
+  // So it would mainly work, however if someone would use someone else's PC it would retreive the Host's user
+  // const data = await axiosInstance.get('/user')
+  // const myName = data.data.login
+
+  const user = await returnUser(req.user)
+  const userName = user.name
+  console.log('userName', userName)
+
+  // const data = await axiosInstance.get(`/orgs/${process.env.ORGANIZATION}/repos`)
+  const data = await axiosInstance.get(`/orgs/${process.env.ORGANIZATION}/repos`)
+  const orgRepos = data.data
+  console.log('orgRepos', orgRepos)
 }
 
 module.exports = { getRepositoriesFromGithub }
