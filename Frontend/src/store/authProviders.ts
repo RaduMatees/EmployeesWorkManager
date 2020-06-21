@@ -39,7 +39,13 @@ export const authProvidersModule = {
     async getRepositories(context: AuthProvidersContext, token: string) {
       const apiClient = ApiClient.getInstance()
       const repositories = await apiClient.getRepositories(token)
-      console.log('repositories', repositories)
+      console.log('------------- repositories', repositories)
+    },
+
+    async getMembers(context: AuthProvidersContext, token: string) {
+      const apiClient = ApiClient.getInstance()
+      const members = await apiClient.getMembers(token)
+      console.log('-------------- members', members)
     }
   },
 

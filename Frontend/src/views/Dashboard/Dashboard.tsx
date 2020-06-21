@@ -17,7 +17,13 @@ export default class Dashboard extends Vue {
 
   @Watch('githubAccessToken')
   onGithubTokenAvailable(token: string) {
-    if (token) this.$store.dispatch('getRepositories', token)
+    if (token) {
+      if (this.loggedUser.role === 'admin') {
+        this.$store.dispatch('getMembers', token)
+      } else {
+        this.$store.dispatch('getRepositories', token)
+      }
+    }
   }
 
   mounted() {

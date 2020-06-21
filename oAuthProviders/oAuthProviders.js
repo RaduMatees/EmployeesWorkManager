@@ -1,12 +1,7 @@
 const axios = require('axios')
-const setAuthToken = require('./setAuthToken')
-
-let axiosInstance = null
+const { setAuthToken } = require('./axiosInstance')
 
 const authenticateToGithub = async (req, res, role) => {
-  axiosInstance = axios.create({
-    baseURL: 'https://api.github.com'
-  })
   try {
     const scope = role === 'admin' ? 'repo' : 'user'
     res.redirect(`https://github.com/login/oauth/authorize?client_id=${process.env.CLIENT_ID}&scope=${scope}`)
@@ -27,7 +22,7 @@ const getTokenFromGithub = async (req, res, code) => {
 
     let token = response.data
     token = token.substring(token.indexOf('=') + 1, token.indexOf('&scope'))
-    setAuthToken(axiosInstance, token)
+    setAuthToken(token)
 
     return res.json({
       status: 200,
@@ -39,31 +34,4 @@ const getTokenFromGithub = async (req, res, code) => {
   }
 }
 
-const getRepositoriesFromGithub = async (req, res, token) => {
-  try {
-    const response = await axiosInstance.get(`/orgs/${process.env.ORGANIZATION}/repos`)
-    console.log('response.data', response.data)
-    // const repos = response.data.map(repo => repo.name)
-    // console.log('repos', repos)
-  } catch (err) {
-    console.error('Error trying to fetch repositories, ', err.response.status)
-    console.error('Error trying to fetch repositories, ', err.response.statusText)
-    console.error('Error trying to fetch repositories, ', err.config.headers.Authorization)
-  }
-
-  // const user = await returnUser(req.user)
-  // console.log('user', user)
-
-  // Get Collaborators
-  // console.log('token', axios.defaults.headers.common)
-  // const collaborators = await axios.get(`https://api.github.com/repos/BigTechEnterprise/Project1-Frontend/collaborators`)
-  // console.log('collaborators', collaborators)
-
-  // if (req.user.role === 'admin') {
-  //   // Fetch all employees and repositories
-  // } else {
-
-  // }
-}
-
-module.exports = { authenticateToGithub, getTokenFromGithub, getRepositoriesFromGithub }
+module.exports = { authenticateToGithub, getTokenFromGithub }
