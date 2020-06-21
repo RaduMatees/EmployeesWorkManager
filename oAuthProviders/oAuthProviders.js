@@ -3,8 +3,8 @@ const { setAuthToken } = require('./axiosInstance')
 
 const authenticateToGithub = async (req, res, role) => {
   try {
-    const scope = role === 'admin' ? 'repo' : 'user'
-    res.redirect(`https://github.com/login/oauth/authorize?client_id=${process.env.CLIENT_ID}&scope=${scope}`)
+    // const scope = role === 'admin' ? 'repo' : 'user'
+    res.redirect(`https://github.com/login/oauth/authorize?client_id=${process.env.CLIENT_ID}&scope=repo`)
   } catch (err) {
     console.error('Error authenticating to Github OAuth Provider')
   }

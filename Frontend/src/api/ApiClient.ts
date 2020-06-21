@@ -97,7 +97,8 @@ export default class ApiClient {
 
   async getMembers(token: string) {
     try {
-      return await this.restClient.get(`/api/oauth/github/members/${token}`)
+      // return await this.restClient.get(`/api/oauth/github/members/${token}`)
+      return await this.restClient.get(`/api/oauth/github/repositories/${token}`)
     } catch (err) {
       console.error('Error fetching members, ', err)
     }

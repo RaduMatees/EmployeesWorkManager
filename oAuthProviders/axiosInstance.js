@@ -6,6 +6,7 @@ const axiosInstance = axios.create({
 
 const setAuthToken = (token) => {
   if (token) {
+    delete axiosInstance.defaults.headers.common['Authorization']
     axiosInstance.defaults.headers.common['Authorization'] = `token ${token}`
     axiosInstance.defaults.headers.common['Content-Type'] = `application/json`
   } else {
